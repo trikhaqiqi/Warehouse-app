@@ -55,11 +55,99 @@ class Kategori extends BaseController
             ]);
 
             $pesan = [
-                'sukses' => '<div class="mt-1 alert alert-success">Data kategori berhasil ditambahkan.</div>'
+                'sukses' => '<div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-check"></i> Berhasil !</h5>
+                    Data kategori berhasil ditambahkan.
+                </div>'
             ];
 
             session()->setFlashdata($pesan);
             return redirect()->to('/kategori/index');
         }
-    }    
+    }
+    
+    public function formedit($id)
+    {
+        $rowData = $this->kategori->find($id);
+
+        if ($rowData) {
+
+            $data = [
+                'id' => $id,
+                'nama' => $rowData['katnama']
+            ];
+
+            return view('kategori/formedit', $data);
+
+        } else {
+            exit('Data tidak ditemukan');
+        }
+    }
+
+    public function updatedata() {
+        $idkategori = $this->request->getVar('idkategori');
+
+        $namakategori = $this->request->getVar('namakategori');
+
+        $validation = \Config\Services::validation();
+
+        $valid = $this->validate([
+            'namakategori' => [
+                'rules' => 'required',
+                'label' => 'Nama Kategori',
+                'errors' => [
+                    'required' => '{field} tidak boleh kosong'
+                ]
+            ]
+        ]);
+
+        if(!$valid) {
+            $pesan = [
+                'errorNamaKategori' => '<div class="mt-1 alert alert-danger">'. $validation->getError() .'</div>'
+            ];
+
+            session()->setFlashdata($pesan);
+            return redirect()->to('/kategori/formedit/' . $idkategori);
+        } else {
+            $this->kategori->update( $idkategori, [
+                'katnama' => $namakategori
+            ]);
+
+            $pesan = [
+                'sukses' => '<div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h5><i class="icon fas fa-check"></i> Berhasil !</h5>
+                                Data kategori berhasil diupdate.
+                            </div>'
+            ];
+
+            session()->setFlashdata($pesan);
+            return redirect()->to('/kategori/index');
+        }
+    }
+
+    public function hapus($id) {
+        $rowData = $this->kategori->find($id);
+
+        if ($rowData) {
+
+            $this->kategori->delete($id);
+
+            $pesan = [
+                'sukses' => '<div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h5><i class="icon fas fa-check"></i> Berhasil !</h5>
+                                Data kategori berhasil dihapus.
+                            </div>'
+            ];
+
+            session()->setFlashdata($pesan);
+            return redirect()->to('/kategori/index');
+
+        } else {
+            exit('Data tidak ditemukan');
+        }
+    }
+
 }
