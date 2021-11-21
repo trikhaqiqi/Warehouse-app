@@ -18,6 +18,19 @@ Manajemen Data Kategori
 
 <?= session()->getFlashdata('sukses'); ?>
 
+<?= form_open('kategori/index') ?>
+
+<div class="input-group mb-3">
+  <input type="text" class="form-control" placeholder="Cari data kategori" aria-label="Recipient's username" aria-describedby="button-addon2" name="cari" value="<?= $cari; ?>">
+  <div class="input-group-append">
+    <button class="btn btn-outline-primary" type="submit" id="tombolcaro" name="tombolcari">
+        <i class="fa fa-search"></i>
+    </button>
+  </div>
+</div>
+
+<?=  form_close(); ?>
+
 <table class="table table-striped table-bordered" style="width:100%;">
     <thead>
         <tr>
@@ -29,7 +42,7 @@ Manajemen Data Kategori
 
     <tbody>
         <?php
-            $nomor = 1;
+            $nomor = 1 + (($nohalaman - 1) * 5);
             foreach($tampildata as $row):        
         ?>
 
@@ -55,6 +68,10 @@ Manajemen Data Kategori
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<div class="float-center mt-3">
+    <?= $pager->links('kategori', 'paging'); ?>
+</div>
 
 <script>
     function edit(id) {
